@@ -78,6 +78,14 @@
       animation: slideIn 1s ease-out;
     }
 
+    #form-container {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 30px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
     input, textarea {
       width: 100%;
       padding: 16px;
@@ -85,7 +93,6 @@
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
       color: white;
       font-size: 16px;
       transition: 0.3s;
@@ -100,7 +107,6 @@
     .stars span { font-size: 28px; cursor: pointer; color: #2a2a2a; transition: 0.3s; }
     .stars span.active { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.5); }
 
-    /* КНОПКА ОТПРАВИТЬ */
     .submit-btn {
       width: 100%;
       padding: 18px;
@@ -120,7 +126,6 @@
       transform: scale(1.01);
     }
 
-    /* ОТЗЫВЫ */
     .review {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.05);
@@ -169,20 +174,21 @@
 </header>
 
 <div class="section">
-  <h2 style="font-weight: 600; margin-bottom: 30px;">Отзывы</h2>
-
-  <input id="name" placeholder="Твое имя">
-  <textarea id="review" placeholder="Напиши что-нибудь честное..."></textarea>
-
-  <div class="stars" id="stars">
-    <span onclick="setRating(1)">★</span>
-    <span onclick="setRating(2)">★</span>
-    <span onclick="setRating(3)">★</span>
-    <span onclick="setRating(4)">★</span>
-    <span onclick="setRating(5)">★</span>
+  <div id="form-container">
+    <h2 id="form-title" style="font-weight: 600; margin-top: 0;">Оставить отзыв</h2>
+    <div id="input-fields">
+      <input id="name" placeholder="Твое имя">
+      <textarea id="review" placeholder="Напиши что-нибудь честное..."></textarea>
+      <div class="stars" id="stars">
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4)">★</span>
+        <span onclick="setRating(5)">★</span>
+      </div>
+      <button class="submit-btn" onclick="addReview()">ОПУБЛИКОВАТЬ</button>
+    </div>
   </div>
-
-  <button class="submit-btn" onclick="addReview()">ОПУБЛИКОВАТЬ</button>
 
   <div id="reviews" style="margin-top: 50px;"></div>
 </div>
@@ -209,11 +215,19 @@
   const db = getDatabase(app);
   const reviewsRef = ref(db, 'reviews');
 
-  // --- СИСТЕМА ВЕРИФИКАЦИИ ---
+  // --- НАСТРОЙКИ ---
   const ADMIN_SECRET = "zokha_admin_77"; // Секретный код для галочки
-  const isAdmin = false; // Поменяй на true, когда ТЕБЕ нужно удалить спам
+  const isAdmin = false; // Поставь true, чтобы видеть кнопки удаления
 
   let rating = 0;
+
+  // Проверка на наличие отзыва в этом браузере
+  const checkReviewStatus = () => {
+    if (localStorage.getItem('has_posted_review') === 'true' && !isAdmin) {
+      document.getElementById('input-fields').innerHTML = `<p style="opacity: 0.6; text-align: center; padding: 20px;">Вы уже оставили отзыв. Благодарим за участие!</p>`;
+      document.getElementById('form-title').innerText = "Спасибо за отзыв!";
+    }
+  };
 
   window.setRating = (r) => {
     rating = r;
@@ -223,27 +237,38 @@
   };
 
   window.addReview = () => {
+    if (localStorage.getItem('has_posted_review') === 'true' && !isAdmin) return;
+
     let name = document.getElementById('name').value.trim();
     let text = document.getElementById('review').value.trim();
-    if (!name || !text || rating === 0) { alert('Заполни все поля и выбери звезды!'); return; }
-
-    let verified = false;
-    // Если в тексте есть секретный код
-    if (text.includes(ADMIN_SECRET)) {
-        verified = true;
-        text = text.replace(ADMIN_SECRET, "").trim(); // Удаляем код из текста
-        name = "zokha"; // Принудительно ставим твое имя
+    
+    if (!name || !text || rating === 0) { 
+      alert('Заполни все поля и выбери звезды!'); 
+      return; 
     }
 
-    push(reviewsRef, { name, text, rating, verified, timestamp: Date.now() });
-    
-    document.getElementById('name').value = '';
-    document.getElementById('review').value = '';
-    window.setRating(0);
+    let verified = false;
+    if (text.includes(ADMIN_SECRET)) {
+        verified = true;
+        text = text.replace(ADMIN_SECRET, "").trim();
+        name = "zokha";
+    }
+
+    push(reviewsRef, { name, text, rating, verified, timestamp: Date.now() })
+    .then(() => {
+        if (!verified) {
+          localStorage.setItem('has_posted_review', 'true');
+          checkReviewStatus();
+        } else {
+          document.getElementById('name').value = '';
+          document.getElementById('review').value = '';
+          window.setRating(0);
+        }
+    });
   };
 
   window.deleteReview = (key) => { 
-      if (confirm("Удалить отзыв?")) remove(ref(db, `reviews/${key}`)); 
+    if (confirm("Удалить отзыв навсегда?")) remove(ref(db, `reviews/${key}`)); 
   };
 
   onValue(reviewsRef, (snapshot) => {
@@ -253,8 +278,6 @@
     if (data) {
       Object.keys(data).reverse().forEach((key) => {
         const r = data[key];
-        
-        // Галочка ставится только если в базе verified = true
         const badge = r.verified ? `<span style="color: #5865F2; margin-left: 5px;" title="Подтверждено">✔</span>` : '';
         const delBtn = isAdmin ? `<button class="delete" onclick="deleteReview('${key}')">УДАЛИТЬ</button>` : '';
 
@@ -270,6 +293,8 @@
       });
     }
   });
+
+  checkReviewStatus();
 </script>
 
 </body>
