@@ -195,20 +195,23 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // КОНФИГУРАЦИЯ FIREBASE (Вставь свои данные здесь)
- const firebaseConfig = {
-  apiKey: "AIzaSyBlUyFit6aLIt4W9R3Xb7df6LrY6YXpHFk",
-  authDomain: "nonsensus-ff3a5.firebaseapp.com",
-  projectId: "nonsensus-ff3a5",
-  storageBucket: "nonsensus-ff3a5.firebasestorage.app",
-  messagingSenderId: "1081848424959",
-  appId: "1:1081848424959:web:21b0e4f1b325d881155fca",
-  measurementId: "G-EG8TL49YX8"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBlUyFit6aLIt4W9R3Xb7df6LrY6YXpHFk",
+    authDomain: "nonsensus-ff3a5.firebaseapp.com",
+    projectId: "nonsensus-ff3a5",
+    storageBucket: "nonsensus-ff3a5.firebasestorage.app",
+    messagingSenderId: "1081848424959",
+    appId: "1:1081848424959:web:21b0e4f1b325d881155fca",
+    measurementId: "G-EG8TL49YX8"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const reviewsRef = ref(db, 'reviews');
+
+  // --- СИСТЕМА ВЕРИФИКАЦИИ ---
+  const ADMIN_SECRET = "zokha_admin_77"; // Секретный код для галочки
+  const isAdmin = false; // Поменяй на true, когда ТЕБЕ нужно удалить спам
 
   let rating = 0;
 
@@ -220,18 +223,28 @@
   };
 
   window.addReview = () => {
-    const name = document.getElementById('name').value;
-    const text = document.getElementById('review').value;
+    let name = document.getElementById('name').value.trim();
+    let text = document.getElementById('review').value.trim();
     if (!name || !text || rating === 0) { alert('Заполни все поля и выбери звезды!'); return; }
 
-    push(reviewsRef, { name, text, rating, timestamp: Date.now() });
+    let verified = false;
+    // Если в тексте есть секретный код
+    if (text.includes(ADMIN_SECRET)) {
+        verified = true;
+        text = text.replace(ADMIN_SECRET, "").trim(); // Удаляем код из текста
+        name = "zokha"; // Принудительно ставим твое имя
+    }
+
+    push(reviewsRef, { name, text, rating, verified, timestamp: Date.now() });
     
     document.getElementById('name').value = '';
     document.getElementById('review').value = '';
     window.setRating(0);
   };
 
-  window.deleteReview = (key) => { remove(ref(db, `reviews/${key}`)); };
+  window.deleteReview = (key) => { 
+      if (confirm("Удалить отзыв?")) remove(ref(db, `reviews/${key}`)); 
+  };
 
   onValue(reviewsRef, (snapshot) => {
     const container = document.getElementById('reviews');
@@ -240,11 +253,16 @@
     if (data) {
       Object.keys(data).reverse().forEach((key) => {
         const r = data[key];
+        
+        // Галочка ставится только если в базе verified = true
+        const badge = r.verified ? `<span style="color: #5865F2; margin-left: 5px;" title="Подтверждено">✔</span>` : '';
+        const delBtn = isAdmin ? `<button class="delete" onclick="deleteReview('${key}')">УДАЛИТЬ</button>` : '';
+
         const div = document.createElement('div');
         div.className = 'review';
         div.innerHTML = `
-          <button class="delete" onclick="deleteReview('${key}')">УДАЛИТЬ</button>
-          <strong style="color: #5865F2; font-size: 18px;">${r.name}</strong>
+          ${delBtn}
+          <strong style="color: ${r.verified ? '#fff' : '#5865F2'}; font-size: 18px;">${r.name}${badge}</strong>
           <div style="margin: 8px 0; color: #ffcc00">${'★'.repeat(r.rating)}</div>
           <p style="margin: 0; line-height: 1.6; opacity: 0.8">${r.text}</p>
         `;
