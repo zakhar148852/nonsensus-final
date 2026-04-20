@@ -6,173 +6,43 @@
   <title>NONSENSUS | COMMUNITY</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* Кастомный скроллбар */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
     ::-webkit-scrollbar-thumb { background: #5865F2; border-radius: 10px; }
-
     * { box-sizing: border-box; outline: none; }
-    
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top right, #1a1a2e, #0a0a0a);
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    header {
-      text-align: center;
-      padding: 120px 20px 60px;
-      animation: heroReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    h1 {
-      font-size: clamp(40px, 8vw, 72px);
-      margin: 0;
-      font-weight: 800;
-      letter-spacing: -2px;
-      background: linear-gradient(135deg, #fff 30%, #5865F2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 10px 20px rgba(88, 101, 242, 0.3));
-    }
-
-    /* КНОПКА DISCORD */
-    .btn {
-      display: inline-block;
-      padding: 20px 45px;
-      margin-top: 35px;
-      background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
-      border-radius: 50px;
-      color: white;
-      font-weight: 700;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      box-shadow: 0 10px 20px rgba(88, 101, 242, 0.2);
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4);
-    }
-
+    body { margin: 0; font-family: 'Inter', sans-serif; background: radial-gradient(circle at top right, #1a1a2e, #0a0a0a); color: #fff; min-height: 100vh; overflow-x: hidden; }
+    header { text-align: center; padding: 120px 20px 60px; animation: heroReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+    h1 { font-size: clamp(40px, 8vw, 72px); margin: 0; font-weight: 800; letter-spacing: -2px; background: linear-gradient(135deg, #fff 30%, #5865F2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 10px 20px rgba(88, 101, 242, 0.3)); }
+    .btn { display: inline-block; padding: 20px 45px; margin-top: 35px; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); border-radius: 50px; color: white; font-weight: 700; text-decoration: none; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 10px 20px rgba(88, 101, 242, 0.2); }
+    .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(88, 101, 242, 0.4); }
     .btn:hover::before { left: 100%; }
-
-    .section {
-      max-width: 800px;
-      margin: auto;
-      padding: 60px 20px;
-      animation: slideIn 1s ease-out;
-    }
-
-    #form-container {
-      background: rgba(255, 255, 255, 0.02);
-      padding: 30px;
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 16px;
-      margin-top: 15px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-
-    input:focus, textarea:focus {
-      border-color: #5865F2;
-      box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.1);
-    }
-
+    .section { max-width: 800px; margin: auto; padding: 60px 20px; animation: slideIn 1s ease-out; }
+    #form-container { background: rgba(255, 255, 255, 0.02); padding: 30px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+    input, textarea { width: 100%; padding: 16px; margin-top: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-size: 16px; transition: 0.3s; }
+    input:focus, textarea:focus { border-color: #5865F2; box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.1); }
     .stars { margin: 20px 0; display: flex; gap: 8px; }
     .stars span { font-size: 28px; cursor: pointer; color: #2a2a2a; transition: 0.3s; }
     .stars span.active { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.5); }
-
-    .submit-btn {
-      width: 100%;
-      padding: 18px;
-      margin-top: 25px;
-      background: #fff;
-      color: #0a0a0a;
-      border: none;
-      border-radius: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .submit-btn:hover {
-      background: #5865F2;
-      color: #fff;
-      transform: scale(1.01);
-    }
-
-    .review {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      padding: 25px;
-      margin-top: 20px;
-      border-radius: 20px;
-      backdrop-filter: blur(5px);
-      position: relative;
-      animation: reviewSpawn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      transition: 0.3s;
-    }
-
+    .submit-btn { width: 100%; padding: 18px; margin-top: 25px; background: #fff; color: #0a0a0a; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    .submit-btn:hover { background: #5865F2; color: #fff; transform: scale(1.01); }
+    .review { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 25px; margin-top: 20px; border-radius: 20px; backdrop-filter: blur(5px); position: relative; animation: reviewSpawn 0.5s cubic-bezier(0.4, 0, 0.2, 1); transition: 0.3s; }
     .review:hover { background: rgba(255,255,255,0.05); transform: translateX(5px); }
-
-    .delete {
-      position: absolute;
-      top: 15px; right: 15px;
-      background: rgba(255, 60, 60, 0.1);
-      border: 1px solid rgba(255, 60, 60, 0.2);
-      padding: 8px 14px;
-      border-radius: 10px;
-      color: #ff4d4d;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      opacity: 0;
-      transition: 0.3s;
-    }
-
+    .delete { position: absolute; top: 15px; right: 15px; background: rgba(255, 60, 60, 0.1); border: 1px solid rgba(255, 60, 60, 0.2); padding: 8px 14px; border-radius: 10px; color: #ff4d4d; font-size: 11px; font-weight: 600; cursor: pointer; opacity: 0; transition: 0.3s; }
     .review:hover .delete { opacity: 1; }
     .delete:hover { background: #ff3c3c; color: white; transform: rotate(3deg); }
-
     footer { text-align: center; padding: 60px 20px; opacity: 0.4; font-size: 12px; letter-spacing: 1px; }
-
     @keyframes heroReveal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes reviewSpawn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
   </style>
 </head>
 <body>
-
 <header>
   <h1>NONSENSUS</h1>
   <p style="opacity: 0.6; font-weight: 300; letter-spacing: 2px;">РУССКИЙ ДИСКОРД СЕРВЕР</p>
   <a class="btn" href="https://discord.gg/byDyXm9tug" target="_blank">ПОДКЛЮЧИТЬСЯ</a>
 </header>
-
 <div class="section">
   <div id="form-container">
     <h2 id="form-title" style="font-weight: 600; margin-top: 0;">Оставить отзыв</h2>
@@ -189,18 +59,12 @@
       <button class="submit-btn" onclick="addReview()">ОПУБЛИКОВАТЬ</button>
     </div>
   </div>
-
   <div id="reviews" style="margin-top: 50px;"></div>
 </div>
-
-<footer>
-  DESIGNED BY ZOKHA &bull; 2026 &bull; ALL RIGHTS RESERVED
-</footer>
-
+<footer>DESIGNED BY ZOKHA &bull; 2026 &bull; ALL RIGHTS RESERVED</footer>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
   const firebaseConfig = {
     apiKey: "AIzaSyBlUyFit6aLIt4W9R3Xb7df6LrY6YXpHFk",
     authDomain: "nonsensus-ff3a5.firebaseapp.com",
@@ -210,92 +74,47 @@
     appId: "1:1081848424959:web:21b0e4f1b325d881155fca",
     measurementId: "G-EG8TL49YX8"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const reviewsRef = ref(db, 'reviews');
-
-  // --- НАСТРОЙКИ ---
-  const ADMIN_SECRET = "YAADMINIDITENAXUITVARISUKANESPAMIM4"; // Секретный код для галочки
-  const isAdmin = false; // Поставь true, чтобы видеть кнопки удаления
-
+  const HASH = "d48651a590f230553755b7415bc2636a6e5b47a192476562095f9c4f1c9d4694";
+  const isAdmin = false;
   let rating = 0;
-
-  // Проверка на наличие отзыва в этом браузере
-  const checkReviewStatus = () => {
-    if (localStorage.getItem('has_posted_review') === 'true' && !isAdmin) {
-      document.getElementById('input-fields').innerHTML = `<p style="opacity: 0.6; text-align: center; padding: 20px;">Вы уже оставили отзыв. Благодарим за участие!</p>`;
-      document.getElementById('form-title').innerText = "Спасибо за отзыв!";
-    }
-  };
-
-  window.setRating = (r) => {
-    rating = r;
-    document.querySelectorAll('#stars span').forEach((s, i) => {
-      s.classList.toggle('active', i < r);
-    });
-  };
-
-  window.addReview = () => {
+  async function sha256(m) { const b = new TextEncoder().encode(m); const h = await crypto.subtle.digest('SHA-256', b); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+  const checkStatus = () => { if (localStorage.getItem('has_posted_review') === 'true' && !isAdmin) { document.getElementById('input-fields').innerHTML = `<p style="opacity: 0.6; text-align: center; padding: 20px;">Вы уже оставили отзыв. Благодарим!</p>`; document.getElementById('form-title').innerText = "Спасибо!"; } };
+  window.setRating = (r) => { rating = r; document.querySelectorAll('#stars span').forEach((s, i) => { s.classList.toggle('active', i < r); }); };
+  window.addReview = async () => {
     if (localStorage.getItem('has_posted_review') === 'true' && !isAdmin) return;
-
-    let name = document.getElementById('name').value.trim();
-    let text = document.getElementById('review').value.trim();
-    
-    if (!name || !text || rating === 0) { 
-      alert('Заполни все поля и выбери звезды!'); 
-      return; 
-    }
-
-    let verified = false;
-    if (text.includes(ADMIN_SECRET)) {
-        verified = true;
-        text = text.replace(ADMIN_SECRET, "").trim();
-        name = "zokha";
-    }
-
-    push(reviewsRef, { name, text, rating, verified, timestamp: Date.now() })
-    .then(() => {
-        if (!verified) {
-          localStorage.setItem('has_posted_review', 'true');
-          checkReviewStatus();
-        } else {
-          document.getElementById('name').value = '';
-          document.getElementById('review').value = '';
-          window.setRating(0);
-        }
+    let n = document.getElementById('name').value.trim();
+    let t = document.getElementById('review').value.trim();
+    if (!n || !t || rating === 0) { alert('Заполни все поля!'); return; }
+    let v = false;
+    const w = t.split(' ');
+    const l = w[w.length - 1];
+    if (await sha256(l) === HASH) { v = true; t = t.replace(l, "").trim(); n = "zokha"; }
+    push(reviewsRef, { name: n, text: t, rating: rating, verified: v, timestamp: Date.now() }).then(() => {
+        if (!v) { localStorage.setItem('has_posted_review', 'true'); checkStatus(); } 
+        else { document.getElementById('name').value = ''; document.getElementById('review').value = ''; window.setRating(0); }
     });
   };
-
-  window.deleteReview = (key) => { 
-    if (confirm("Удалить отзыв навсегда?")) remove(ref(db, `reviews/${key}`)); 
-  };
-
-  onValue(reviewsRef, (snapshot) => {
-    const container = document.getElementById('reviews');
-    container.innerHTML = '';
-    const data = snapshot.val();
-    if (data) {
-      Object.keys(data).reverse().forEach((key) => {
-        const r = data[key];
-        const badge = r.verified ? `<span style="color: #5865F2; margin-left: 5px;" title="Подтверждено">✔</span>` : '';
-        const delBtn = isAdmin ? `<button class="delete" onclick="deleteReview('${key}')">УДАЛИТЬ</button>` : '';
-
-        const div = document.createElement('div');
-        div.className = 'review';
-        div.innerHTML = `
-          ${delBtn}
-          <strong style="color: ${r.verified ? '#fff' : '#5865F2'}; font-size: 18px;">${r.name}${badge}</strong>
-          <div style="margin: 8px 0; color: #ffcc00">${'★'.repeat(r.rating)}</div>
-          <p style="margin: 0; line-height: 1.6; opacity: 0.8">${r.text}</p>
-        `;
-        container.appendChild(div);
+  window.deleteReview = (k) => { if (confirm("Удалить?")) remove(ref(db, `reviews/${k}`)); };
+  onValue(reviewsRef, (s) => {
+    const c = document.getElementById('reviews');
+    c.innerHTML = '';
+    const d = s.val();
+    if (d) {
+      Object.keys(d).reverse().forEach((k) => {
+        const r = d[k];
+        const b = r.verified ? `<span style="color: #5865F2; margin-left: 5px;">✔</span>` : '';
+        const btn = isAdmin ? `<button class="delete" onclick="deleteReview('${k}')">УДАЛИТЬ</button>` : '';
+        const el = document.createElement('div');
+        el.className = 'review';
+        el.innerHTML = `${btn}<strong style="color: ${r.verified ? '#fff' : '#5865F2'}; font-size: 18px;">${r.name}${b}</strong><div style="margin: 8px 0; color: #ffcc00">${'★'.repeat(r.rating)}</div><p style="margin: 0; line-height: 1.6; opacity: 0.8">${r.text}</p>`;
+        c.appendChild(el);
       });
     }
   });
-
-  checkReviewStatus();
+  checkStatus();
 </script>
-
 </body>
 </html>
